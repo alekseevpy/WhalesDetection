@@ -1,0 +1,16 @@
+download_info:
+  archive_downloaded: False
+  archive_web_path: 'https://sochi-hub.obs.ru-moscow-1.hc.sbercloud.ru:443/wildlife_project/whale_leus/Whale%20ReId%202.7z' #Если archive_downloaded == True, то оставить пустым
+  archive_save_path: '../Whale ReId 2.7z' #Если archive_downloaded == True, то оставить пустым
+
+  archive_extracted: False
+  archive_saved_path: '../Whale ReId 2.7z' #Если archive_extracted == True, то оставить пустым
+  folder_path: '../Whales' #Если archive_extracted == True, то оставить пустым
+
+datasets:
+  use_masks: False
+  min_pers: 70
+  max_pers: 90
+  n_folders:
+    keep_n_folders: False
+    n: 5
