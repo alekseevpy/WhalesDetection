@@ -1,0 +1,13 @@
+prepare_modules:
+  batch_size: 16
+  shape: 224
+
+  compress_model: True
+  model_name: 'hf-hub:BVRA/MegaDescriptor-S-224'
+  compressed_shape: 128 # Не важно если compress_model: False
+
+trainer_config:
+  num_epochs: 5
+  lr: 0.0001
+  eval_step: 3
+
