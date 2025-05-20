@@ -58,9 +58,7 @@ def load_base_embedding_model(model_name="hf-hub:BVRA/MegaDescriptor-S-224",
 def create_base_model(model_name="hf-hub:BVRA/MegaDescriptor-S-224",
                       device="cuda",
                       weights_path="./best_weights.pth"):
-    model = timm.create_model(model_name, pretrained=True)
-    # todo надо разобраться, как веса правильно загрузить
-    # model = timm.create_model(model_name, pretrained=False)
-    # state_dict = torch.load(weights_path, map_location=device)
-    # model.load_state_dict(state_dict, strict=True)
+    model = timm.create_model(model_name, pretrained=False)
+    state_dict = torch.load(weights_path, map_location=device)
+    model.load_state_dict(state_dict, strict=True)
     return model
