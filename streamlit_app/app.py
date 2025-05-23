@@ -1,7 +1,6 @@
 ﻿import streamlit as st
 from PIL import Image
 import torch
-import torch.nn.functional as F
 import numpy as np
 import model.load_model as whale_model
 from pathlib import Path
@@ -43,15 +42,15 @@ if uploaded_file is not None:
         try:
             input_tensor = preprocess_image(uploaded_file)
             with torch.no_grad():
-                output = model(input_tensor)
-                probabilities = F.softmax(output, dim=1)[0]
+                output = model(input_tensor)[0]
 
             st.success("Классификация завершена")
             st.subheader("Топ классов:")
 
-            top_probs, top_classes = torch.topk(probabilities, 3)
-            for i, (prob, class_idx) in enumerate(zip(top_probs, top_classes)):
-                st.write(f"{i+1}. Class {class_idx.item()}: {prob.item()*100:.2f}%")
+            st.subheader("Все выходы модели:")
+            st.write(output)
+
+            st.bar_chart(output.numpy())
 
         except Exception as e:
             st.error(f"Error: {str(e)}")
