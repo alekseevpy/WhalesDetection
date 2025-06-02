@@ -20,6 +20,7 @@ def run_pipeline():
     with open('../config/train_modules_config.yaml', 'r') as file:
         config = yaml.safe_load(file)
     config = config['trainer_config']
+    validation.evaluate_final_model(model, shape)
 
     model = train_modules.train_model(model, train_loader, shape, epochs = config['num_epochs'], lr = config['lr'], eval_step = config['eval_step'])
 
