@@ -65,18 +65,18 @@ class BalancedDataGenerator(Dataset):
 
 def set_transforms(shape):
     transform_aggressive = A.Compose([
-        A.RandomRotate90(p=0.6),
-        A.HorizontalFlip(p=0.6),
-        A.VerticalFlip(p=0.2),
+        A.RandomRotate90(p=0.9),
+        #A.HorizontalFlip(p=0.6),
+        #A.VerticalFlip(p=0.2),
         A.Resize(shape, shape),
-        A.CoarseDropout(max_holes=5, max_height=20, max_width=20, p=0.3),
+        #A.CoarseDropout(max_holes=5, max_height=20, max_width=20, p=0.3),
         A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ToTensorV2(),
         ])
 
     transform_moderate = A.Compose([
-        A.RandomRotate90(p=0.3),
-        A.HorizontalFlip(p=0.3),
+        A.RandomRotate90(p=0.45),
+        #A.HorizontalFlip(p=0.3),
         A.Resize(shape, shape),
         A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ToTensorV2(),
@@ -187,10 +187,10 @@ def train_model(model, train_loader, shape, epochs=10, lr=1e-4, device="cuda", w
             embeddings = model(images)
             triplets = miner(embeddings, labels)
 
-            if isinstance(triplets, tuple) and len(triplets) > 0 and len(triplets[0]) == 0:
-                skipped_batches += 1
-                batch_bar.set_postfix(loss="skip (no triplets)", skipped=skipped_batches)
-                continue
+            #if isinstance(triplets, tuple) and len(triplets) > 0 and len(triplets[0]) == 0:
+            #    skipped_batches += 1
+            #    batch_bar.set_postfix(loss="skip (no triplets)", skipped=skipped_batches)
+            #    continue
 
             loss = loss_func(embeddings, labels, triplets)
             loss.backward()
