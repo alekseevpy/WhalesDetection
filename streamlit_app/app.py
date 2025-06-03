@@ -92,7 +92,7 @@ if uploaded_file is not None:
             search_result = search_similar_images(embedding, index)
 
             st.success("Классификация завершена")
-            st.subheader("Топ 5 похожих классов:")
+            st.subheader("Топ похожих классов:")
             seen_classes = set()
             for res in search_result:
                 if res['class'] not in seen_classes:
