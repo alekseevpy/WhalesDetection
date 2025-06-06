@@ -13,6 +13,11 @@ Python, MegaDescriptor, FAISS, streamlit
 
 ## Установка:
 
+Локальный запуск веб-приложения:
+* Установить нужные зависимости для запуска из файла streamlit_app/app.py (pytorch, streamlit, faiss).
+* В папку streamlit_app скачать 3 файла [отсюда](https://drive.google.com/drive/folders/1uFS7UQY5VL9c1JExWgveGdtf5Qh5l-Cr?usp=sharing): best_weights.pth хранит веса для модели после обучения, whales_faiss_index.pkl.index и whales_faiss_index.pkl.json нужны для поиска FAISS похожих классов.
+* В файле streamlit_app/model_config.yaml в переменной weights_path указать полный путь к файлу best_weights.pth, скачанного ранее.
+* Запустить Streamlit приложение из корневой директории проекта с помощью команды streamlit run streamlit_app/app.py
 
 ## Выполнили: 
 * Кирилл Демашов
