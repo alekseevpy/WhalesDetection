@@ -19,6 +19,10 @@ Python, MegaDescriptor, FAISS, streamlit
 * В файле streamlit_app/model_config.yaml в переменной weights_path указать полный путь к файлу best_weights.pth, скачанного ранее.
 * Запустить Streamlit приложение из корневой директории проекта с помощью команды streamlit run streamlit_app/app.py
 
+Локальный запуск пайплайна по дообучению MegaDescriptor:
+* Перейдя в папку model/config настроить 2 файла конфигурации. data_preparation_config.yaml отвечает за загрузку архива изображений из облака, применение масок на изображения и настройку количества папок для обучения. train_modules_config.yaml отвечает за настройку базовых параметров пво время обучения (batch_size, learning_rate, num_epochs), а также за выбор, использовать ли сжатие модели
+* Перейдя в папку model/train_pipeline запустить файл run.py с помощью команды python run.py
+
 ## Выполнили: 
 * Кирилл Демашов
 * Алексеев Лев
