@@ -1,6 +1,0 @@
-load_model:
-  compress_model: False
-  model_name: 'hf-hub:BVRA/MegaDescriptor-S-224'
-  compressed_shape: 128 # Не важно если compress_model: False
-  weights_path: 'C:\*fullpath*\best_weights.pth' # надо из тг скачать файл с весами предварительно, тк мы нигде его больше не храним
-
