@@ -1,0 +1,11 @@
+load_model:
+  compress_model: False
+  model_name: 'hf-hub:BVRA/MegaDescriptor-S-224'
+  compressed_shape: 128
+  weights_path: './data/models/best_weights.pth'
+
+index:
+  # общий префикс для файлов FAISS
+  prefix: './data/indexes/whales_faiss_index.pkl'
+
+device: 'cpu'
