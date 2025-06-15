@@ -1,0 +1,218 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #F6F6F6;
+    font-family: 'Montserrat', sans-serif;
+    color: #222222;
+}
+
+.page-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    position: relative;
+    height: 108px;
+    background: linear-gradient(90deg, #1E4391 0%, #EF302B 100%);
+    color: #FFFFFF;
+    padding: 0 40px;
+}
+
+.header .logo {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 150px;
+    height: auto;
+    filter: grayscale(100%) brightness(1000%);
+}
+
+.header .title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    font-weight: 600;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.wrapper {
+    flex: 1;
+    margin-bottom: 20px;
+}
+
+.container-fluid {
+    width: 100%;
+    padding: 40px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1E4391;
+    text-align: center;
+}
+
+.blocks-container {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.blocks-container .block {
+    flex: 1 1 45%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
+
+.upload-title {
+    margin-bottom: 16px;
+}
+
+#uploadArea {
+    border: 2px dashed #22222233;
+    border-radius: 8px;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    background: #fff;
+    width: 100%;
+}
+
+#uploadArea.dragover {
+    background: #e0e0e0;
+}
+
+#uploadArea p {
+    margin: 0;
+    font-size: 18px;
+    color: #666;
+}
+
+#previewImage {
+    display: block;
+    max-width: 100%;
+    margin: 20px auto 0;
+    border-radius: 8px;
+}
+
+.btn-custom {
+    background-color: #1E4391;
+    color: #FFFFFF;
+    border: none;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: background-color 0.3s ease;
+    margin: 20px auto 0;
+    display: block;
+    width: 100%;
+    max-width: 200px;
+}
+
+.btn-custom:hover {
+    background-color: #0F2B5E;
+}
+
+#resultsSection {
+    text-align: center;
+}
+
+#resultsSection table {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin: 0 auto;
+}
+
+#resultsSection th {
+    background-color: #1E4391;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 12px;
+    white-space: nowrap;
+}
+
+#resultsSection td {
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+    color: #222222;
+}
+
+.fixed-width {
+    width: 100px;
+    white-space: nowrap;
+}
+
+.footer {
+    background-color: #1E4391;
+    color: #FFFFFF;
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+.footer .container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.footer .container p {
+    margin: 0;
+    padding: 0 10px;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 20px;
+    }
+
+    .section-title,
+    .upload-title {
+        font-size: 20px;
+    }
+
+    #uploadArea {
+        padding: 20px;
+    }
+
+    .btn-custom {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    #resultsSection th,
+    #resultsSection td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .blocks-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .footer .container {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
