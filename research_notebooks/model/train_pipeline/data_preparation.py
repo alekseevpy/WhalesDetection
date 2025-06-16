@@ -1,12 +1,14 @@
-import requests
 import os
-from urllib.parse import urlparse
-from tqdm import tqdm
-import yaml
-import py7zr
-from PIL import Image
-import shutil
 import random
+import shutil
+from urllib.parse import urlparse
+
+import py7zr
+import requests
+import yaml
+from PIL import Image
+from tqdm import tqdm
+
 
 def download_archive(url, save_path=None, chunk_size=8192, progress_bar=True):
     try:
@@ -20,23 +22,23 @@ def download_archive(url, save_path=None, chunk_size=8192, progress_bar=True):
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
         with requests.get(url, stream=True) as r:
-            r.raise_for_status() 
-            
-            total_size = int(r.headers.get('content-length', 0))
+            r.raise_for_status()
+
+            total_size = int(r.headers.get("content-length", 0))
 
             progress = tqdm(
-                total=total_size, 
-                unit='B', 
-                unit_scale=True, 
-                desc=f"Загрузка {os.path.basename(save_path)}", 
-                disable=not progress_bar
+                total=total_size,
+                unit="B",
+                unit_scale=True,
+                desc=f"Загрузка {os.path.basename(save_path)}",
+                disable=not progress_bar,
             )
-            
-            with open(save_path, 'wb') as f:
+
+            with open(save_path, "wb") as f:
                 for chunk in r.iter_content(chunk_size=chunk_size):
                     f.write(chunk)
                     progress.update(len(chunk))
-            
+
             progress.close()
 
         return os.path.abspath(save_path)
@@ -55,13 +57,13 @@ def extract_7z_archive(archive_path, extract_dir=None, get_files_list=False):
 
     os.makedirs(extract_dir, exist_ok=True)
 
-    with py7zr.SevenZipFile(archive_path, mode='r') as archive:
+    with py7zr.SevenZipFile(archive_path, mode="r") as archive:
         file_list = archive.getnames()
         archive.extractall(path=extract_dir)
 
     if get_files_list:
         return file_list
-    return None     
+    return None
 
 
 def split_whale_data(source_dir, train_ratio=0.8):
@@ -69,7 +71,7 @@ def split_whale_data(source_dir, train_ratio=0.8):
         for file in files:
             if file.endswith(".png"):
                 os.remove(os.path.join(root, file))
-    
+
     whales = os.listdir(source_dir)
     for whale in tqdm(whales):
         whale_path = os.path.join(source_dir, whale)
@@ -77,8 +79,7 @@ def split_whale_data(source_dir, train_ratio=0.8):
         random.shuffle(dates)
 
         total_photos = sum(
-            len(os.listdir(os.path.join(whale_path, date)))
-            for date in dates
+            len(os.listdir(os.path.join(whale_path, date))) for date in dates
         )
         target_test_photos = int(total_photos * (1 - train_ratio))
 
@@ -111,10 +112,12 @@ def split_whale_data(source_dir, train_ratio=0.8):
 
 
 def apply_mask(img, mask_img):
-  image = Image.open(img)
-  mask = Image.open(mask_img)
+    image = Image.open(img)
+    mask = Image.open(mask_img)
 
-  return Image.composite(image, Image.new("RGB", image.size, (0, 0, 0)), mask)
+    return Image.composite(
+        image, Image.new("RGB", image.size, (0, 0, 0)), mask
+    )
 
 
 def split_whale_data_with_masks(source_dir, train_ratio=0.8):
@@ -125,8 +128,7 @@ def split_whale_data_with_masks(source_dir, train_ratio=0.8):
         random.shuffle(dates)
 
         total_photos = sum(
-            len(os.listdir(os.path.join(whale_path, date)))
-            for date in dates
+            len(os.listdir(os.path.join(whale_path, date))) for date in dates
         )
         target_test_photos = int(total_photos * (1 - train_ratio))
 
@@ -151,11 +153,13 @@ def split_whale_data_with_masks(source_dir, train_ratio=0.8):
             os.makedirs(dst, exist_ok=True)
             src_imgs = os.listdir(src)
             for src_img in src_imgs:
-                if src_img.split('.')[1] == 'jpg':
-                    stem = src_img.split('.')[0]
+                if src_img.split(".")[1] == "jpg":
+                    stem = src_img.split(".")[0]
                     original_path = os.path.join(src, src_img)
                     mask_path = os.path.join(src, stem + ".png")
-                    apply_mask(original_path, mask_path).save(os.path.join(dst, stem + ".jpg"))
+                    apply_mask(original_path, mask_path).save(
+                        os.path.join(dst, stem + ".jpg")
+                    )
 
         for date in test_dates:
             src = os.path.join(whale_path, date)
@@ -163,11 +167,13 @@ def split_whale_data_with_masks(source_dir, train_ratio=0.8):
             os.makedirs(dst, exist_ok=True)
             src_imgs = os.listdir(src)
             for src_img in src_imgs:
-                if src_img.split('.')[1] == 'jpg':
-                    stem = src_img.split('.')[0]
+                if src_img.split(".")[1] == "jpg":
+                    stem = src_img.split(".")[0]
                     original_path = os.path.join(src, src_img)
                     mask_path = os.path.join(src, stem + ".png")
-                    apply_mask(original_path, mask_path).save(os.path.join(dst, stem + ".jpg"))
+                    apply_mask(original_path, mask_path).save(
+                        os.path.join(dst, stem + ".jpg")
+                    )
 
 
 def check_balance(root_dir, min_train_percent=70, max_train_percent=90):
@@ -181,8 +187,10 @@ def check_balance(root_dir, min_train_percent=70, max_train_percent=90):
 
         for whale in os.listdir(split_path):
             if whale not in stats:
-                stats[whale] = {"train": {"photos": 0, "dates": 0},
-                               "test": {"photos": 0, "dates": 0}}
+                stats[whale] = {
+                    "train": {"photos": 0, "dates": 0},
+                    "test": {"photos": 0, "dates": 0},
+                }
 
             whale_path = os.path.join(split_path, whale)
             photo_count = 0
@@ -192,8 +200,11 @@ def check_balance(root_dir, min_train_percent=70, max_train_percent=90):
                 date_path = os.path.join(whale_path, date)
                 if os.path.isdir(date_path):
                     date_count += 1
-                    photos = [f for f in os.listdir(date_path)
-                             if f.lower().endswith(('.jpg'))]
+                    photos = [
+                        f
+                        for f in os.listdir(date_path)
+                        if f.lower().endswith((".jpg"))
+                    ]
                     photo_count += len(photos)
 
             stats[whale][split]["photos"] = photo_count
@@ -224,8 +235,16 @@ def check_balance(root_dir, min_train_percent=70, max_train_percent=90):
             deleted_whales.append(whale)
             del stats[whale]
 
-    print("\n{:<15} {:<10} {:<10} {:<10} {:<10} {:<10}".format(
-        "Кит", "Train фото", "Test фото", "Train %", "Test %", "Даты (train/test)"))
+    print(
+        "\n{:<15} {:<10} {:<10} {:<10} {:<10} {:<10}".format(
+            "Кит",
+            "Train фото",
+            "Test фото",
+            "Train %",
+            "Test %",
+            "Даты (train/test)",
+        )
+    )
     print("-" * 70)
 
     for whale, data in stats.items():
@@ -233,14 +252,16 @@ def check_balance(root_dir, min_train_percent=70, max_train_percent=90):
         train_p = (data["train"]["photos"] / total) * 100
         test_p = (data["test"]["photos"] / total) * 100
 
-        print("{:<15} {:<10} {:<10} {:<10.1f}% {:<10.1f}% {:<10}".format(
-            whale,
-            data["train"]["photos"],
-            data["test"]["photos"],
-            train_p,
-            test_p,
-            f"{data['train']['dates']}/{data['test']['dates']}"
-        ))
+        print(
+            "{:<15} {:<10} {:<10} {:<10.1f}% {:<10.1f}% {:<10}".format(
+                whale,
+                data["train"]["photos"],
+                data["test"]["photos"],
+                train_p,
+                test_p,
+                f"{data['train']['dates']}/{data['test']['dates']}",
+            )
+        )
 
     if deleted_whales:
         print("\nУдаленные папки с плохим балансом или малым числом дат:")
@@ -261,7 +282,7 @@ def flatten_directory_structure(root_dir):
 
             for root, dirs, files in os.walk(whale_path):
                 for file in files:
-                    if file.lower().endswith(('.jpg')):
+                    if file.lower().endswith((".jpg")):
                         src_path = os.path.join(root, file)
 
                         date_folder = os.path.basename(root)
@@ -283,8 +304,12 @@ def keep_common_folders(dataset_path, max_folders_to_keep=8):
     train_path = os.path.join(dataset_path, "train")
     test_path = os.path.join(dataset_path, "test")
 
-    train_folders = set(os.listdir(train_path)) if os.path.exists(train_path) else set()
-    test_folders = set(os.listdir(test_path)) if os.path.exists(test_path) else set()
+    train_folders = (
+        set(os.listdir(train_path)) if os.path.exists(train_path) else set()
+    )
+    test_folders = (
+        set(os.listdir(test_path)) if os.path.exists(test_path) else set()
+    )
 
     common_folders = list(train_folders & test_folders)
     print(f"Найдено общих папок: {len(common_folders)}")
@@ -307,21 +332,35 @@ def keep_common_folders(dataset_path, max_folders_to_keep=8):
 
 
 def prepare_data(yaml_path):
-    with open(yaml_path, 'r') as file:
+    with open(yaml_path, "r") as file:
         config = yaml.safe_load(file)
-    download_info_conf = config['download_info']
+    download_info_conf = config["download_info"]
 
-    if download_info_conf['archive_downloaded'] == False:
-        download_archive(download_info_conf['archive_web_path'], download_info_conf['archive_save_path'])
-    if download_info_conf['archive_extracted'] == False:
-        extract_7z_archive(download_info_conf['archive_saved_path'], download_info_conf['folder_path'])
-    
-    datasets_conf = config['datasets']
-    if datasets_conf['use_masks']:
-      split_whale_data_with_masks(download_info_conf['folder_path'] + '/Whale ReId 2')
+    if download_info_conf["archive_downloaded"] == False:
+        download_archive(
+            download_info_conf["archive_web_path"],
+            download_info_conf["archive_save_path"],
+        )
+    if download_info_conf["archive_extracted"] == False:
+        extract_7z_archive(
+            download_info_conf["archive_saved_path"],
+            download_info_conf["folder_path"],
+        )
+
+    datasets_conf = config["datasets"]
+    if datasets_conf["use_masks"]:
+        split_whale_data_with_masks(
+            download_info_conf["folder_path"] + "/Whale ReId 2"
+        )
     else:
-      split_whale_data(download_info_conf['folder_path'] + '/Whale ReId 2')
-    check_balance('../whales_processed', datasets_conf['min_pers'], datasets_conf['max_pers'])
-    flatten_directory_structure('../whales_processed')
-    if datasets_conf['n_folders']['keep_n_folders']:
-      keep_common_folders('../whales_processed', datasets_conf['n_folders']['n'])
+        split_whale_data(download_info_conf["folder_path"] + "/Whale ReId 2")
+    check_balance(
+        "../whales_processed",
+        datasets_conf["min_pers"],
+        datasets_conf["max_pers"],
+    )
+    flatten_directory_structure("../whales_processed")
+    if datasets_conf["n_folders"]["keep_n_folders"]:
+        keep_common_folders(
+            "../whales_processed", datasets_conf["n_folders"]["n"]
+        )
