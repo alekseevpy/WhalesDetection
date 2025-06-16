@@ -30,12 +30,9 @@ jobs:
         run: |
           flake8 backend tests
 
-      - name: Run unit tests (excluding ModelService tests)
+      - name: Run all tests
         run: |
-          pytest tests/unit \
-            --ignore=tests/unit/services/test_model_service.py \
-            --maxfail=1 \
-            --disable-warnings -q
+          pytest tests --maxfail=1 --disable-warnings -q
 
   build-and-push:
     name: Build & Push Docker image
