@@ -36,7 +36,7 @@ jobs:
 
   build-and-push:
     name: Build & Push Docker image
-    needs: lint-and-unit-tests
+    needs: lint-and-tests
     runs-on: ubuntu-latest
     if: >
       (github.event_name == 'push'
