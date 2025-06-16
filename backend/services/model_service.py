@@ -83,7 +83,7 @@ class ModelService:
             загруженный nn.Module на указанном устройстве.
         """
         m = timm.create_model(name, pretrained=False)
-        sd = torch.load(weights_path, map_location=device)
+        sd = torch.load(weights_path, map_location=device, weights_only=False)
         m.load_state_dict(sd, strict=True)
         return m.to(device)
 
