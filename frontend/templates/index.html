@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>WhalesDetection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="icon" href="/static/icons/logo_ico.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <header class="header">
+            <img src="/static/icons/logo_napis_png.png" alt="Логотип" class="logo" />
+            <h1 class="title">
+                Классификатор изображений китов на основе MegaDescriptor
+            </h1>
+        </header>
+
+        <div class="wrapper container-fluid">
+            <div class="blocks-container">
+                <div class="block upload-block">
+                    <h3 class="section-title upload-title">Загрузка изображения</h3>
+                    <div id="uploadArea">
+                        <p>Перетащите изображение сюда или нажмите, чтобы выбрать</p>
+                        <input type="file" id="fileInput" accept="image/png,image/jpeg" hidden />
+                        <img id="previewImage" src="" alt="" />
+                    </div>
+                    <button id="classifyBtn" class="btn-custom" disabled>
+                        Классифицировать
+                    </button>
+                </div>
+
+                <div class="block results-block">
+                    <h3 class="section-title">Топ 5 похожих классов:</h3>
+                    <div id="resultsSection">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="fixed-width">#</th>
+                                    <th>Класс</th>
+                                    <th class="fixed-width">Расстояние</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <p>Якутин Сергей</p>
+                <p>Лыков Дмитрий</p>
+                <p>Демашов Кирилл</p>
+                <p>Алексеев Лев</p>
+                <p>Солодникова София</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById("uploadArea");
+        const fileInput = document.getElementById("fileInput");
+        const previewImage = document.getElementById("previewImage");
+        const classifyBtn = document.getElementById("classifyBtn");
+        let selectedFile = null;
+
+        uploadArea.addEventListener("click", () => fileInput.click());
+        ["dragenter", "dragover"].forEach(evt =>
+            uploadArea.addEventListener(evt, e => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.classList.add("dragover");
+            })
+        );
+        ["dragleave", "drop"].forEach(evt =>
+            uploadArea.addEventListener(evt, e => {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.classList.remove("dragover");
+            })
+        );
+        uploadArea.addEventListener("drop", e => {
+            const dt = e.dataTransfer;
+            if (dt.files.length) handleFile(dt.files[0]);
+        });
+        fileInput.addEventListener("change", () => {
+            if (fileInput.files.length) handleFile(fileInput.files[0]);
+        });
+
+        function handleFile(file) {
+            if (!["image/jpeg", "image/png"].includes(file.type)) {
+                alert("Поддерживаются только JPEG и PNG");
+                return;
+            }
+            selectedFile = file;
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImage.src = e.target.result;
+                previewImage.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+            classifyBtn.disabled = false;
+            document.getElementById("resultsSection").style.display = "none";
+            document.getElementById("resultsTable").innerHTML = "";
+        }
+
+        classifyBtn.addEventListener("click", async () => {
+            if (!selectedFile) return;
+            classifyBtn.disabled = true;
+            classifyBtn.textContent = "Классификация...";
+            try {
+                const form = new FormData();
+                form.append("file", selectedFile);
+                form.append("top_k", 5);
+                const resp = await fetch("/api/predict", {
+                    method: "POST",
+                    body: form
+                });
+                if (!resp.ok) throw new Error(`Ошибка ${resp.status}`);
+                const data = await resp.json();
+                const tbody = document.getElementById("resultsTable");
+                tbody.innerHTML = "";
+                data.results.forEach((item, i) => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+            <td class="fixed-width">${i + 1}</td>
+            <td>${item.class_name}</td>
+            <td class="fixed-width">${item.distance.toFixed(2)}</td>
+          `;
+                    tbody.appendChild(tr);
+                });
+                document.getElementById("resultsSection").style.display = "block";
+            } catch (err) {
+                alert("Ошибка сервера: " + err.message);
+            } finally {
+                classifyBtn.disabled = false;
+                classifyBtn.textContent = "Классифицировать";
+            }
+        });
+    </script>
+</body>
+
+</html>
