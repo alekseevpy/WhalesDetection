@@ -15,8 +15,8 @@ WORKDIR /app
 COPY . .
 
 # RUN git config --global url."https://github.com/".insteadOf "git@github.com:" \
-#  && git lfs install \
-#  && git lfs pull --include="data/models/best_weights.pth,data/indexes/*"
+#   && git lfs install \
+#   && git lfs pull --include="data/models/best_weights.pth,data/indexes/*"
 
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
