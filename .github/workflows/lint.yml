@@ -1,0 +1,40 @@
+name: Lint Check
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install black flake8 nbqa
+
+      - name: Run black (autofix .py and .ipynb)
+        run: |
+          echo "::group::Black"
+          black . 2>&1 | tee black_log.txt || true
+          nbqa black . 2>&1 | tee -a black_log.txt || true
+          echo "::endgroup::"
+
+      - name: Run flake8 (only check)
+        run: |
+          echo "::group::Flake8"
+          flake8 . 2>&1 | tee flake8_log.txt || true
+          nbqa flake8 . 2>&1 | tee -a flake8_log.txt || true
+          echo "::endgroup::"
+
+      - name: Show combined lint logs
+        run: |
+          echo "====== BLACK ======"
+          cat black_log.txt || echo "No black output"
+          echo "====== FLAKE8 ======"
+          cat flake8_log.txt || echo "No flake8 output"
