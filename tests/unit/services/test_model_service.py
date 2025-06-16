@@ -55,7 +55,8 @@ def config_and_index(tmp_path, monkeypatch):
         "timm.create_model", lambda name, pretrained: DummyModel()
     )
     monkeypatch.setattr(
-        "torch.load", lambda path, map_location=None: dummy.state_dict()
+        "torch.load",
+        lambda path, map_location=None, **kwargs: dummy.state_dict(),
     )
 
     # пишем конфиг YAML
